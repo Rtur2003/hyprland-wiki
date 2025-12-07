@@ -28,9 +28,9 @@ noClasses = false
 [[menu.main]]
 identifier = "version"
 name       = "Latest git"
-url        = "https://wiki.hypr.land/version-selector/"
+url        = "/version-selector/"
 weight     = 1
-[[menu.main.params]]
+[menu.main.params]
 type     = "version"
 outdated = false  # set for any version that isn't the current one
 version  = ""     # only change when setting the version, otherwise it is "Latest git" by default
