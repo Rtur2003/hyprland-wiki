@@ -1,8 +1,8 @@
-{{- $version := .params.version | default "Latest git" -}}
-{{- $url := .url | default "/version-selector/" -}}
+{{- $version := .Params.version | default "Latest git" -}}
+{{- $url := .URL | default "/version-selector/" -}}
 
 {{- $outdated := "" -}}
-{{- if .params.outdated -}}
+{{- if .Params.outdated -}}
   {{- $outdated = "outdated" -}}
 {{- end -}}
 
