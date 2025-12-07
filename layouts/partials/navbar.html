@@ -32,7 +32,7 @@
       {{- if eq .Params.type "search" -}}
         {{- partial "search.html" (dict "params" .Params) -}}
       {{- else if eq .Params.type "version" -}}
-        {{- partial "version.html" (dict "params" .Params) -}}
+        {{- partial "version.html" . -}}
       {{- else -}}
         {{- $link := .URL -}}
         {{- $external := strings.HasPrefix $link "http" -}}
