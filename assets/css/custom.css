@@ -1,8 +1,185 @@
+/**
+ * Custom Styles for Hyprland Wiki
+ * Implements defensive patterns for robustness and accessibility
+ */
+
+/* ============================================
+   Color System - Defensive defaults
+   ============================================ */
 :root {
   --primary-hue: 186deg;
   --primary-saturation: 100%;
+  
+  /* Defensive spacing system */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  
+  /* Responsive breakpoints for reference */
+  --breakpoint-mobile: 640px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
 }
 
+/* ============================================
+   Version Badge - Enhanced visibility
+   ============================================ */
 .outdated span {
   color: #df1500;
+  font-weight: 600;
+  /* Ensure visibility in all contexts */
+  background-color: rgba(223, 21, 0, 0.1);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: 0.25rem;
+  /* Defensive: prevent text overflow */
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================
+   Text Overflow Protection - Universal
+   ============================================ */
+.hx-truncate-safe {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Multi-line truncation with fallback */
+.hx-line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  /* Fallback for browsers without line-clamp */
+  max-height: 3em;
+  line-height: 1.5em;
+}
+
+.hx-line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: 4.5em;
+  line-height: 1.5em;
+}
+
+/* ============================================
+   Long Content Handling - Code and URLs
+   ============================================ */
+code, pre {
+  /* Prevent horizontal overflow */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  /* Allow scrolling for extremely long content */
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Long URLs should break */
+a {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ============================================
+   Focus Indicators - Accessibility
+   ============================================ */
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  /* Ensure outline is never hidden */
+  outline-color: var(--primary-color, #00bcd4);
+}
+
+/* ============================================
+   Touch Targets - Mobile Usability
+   ============================================ */
+@media (max-width: 768px) {  /* Note: CSS doesn't support CSS variable references in media queries yet */
+  /* Ensure minimum touch target size (44x44px per WCAG) */
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+    /* Ensure proper spacing */
+    padding: var(--space-sm);
+  }
+}
+
+/* ============================================
+   Container Queries - Responsive Content
+   ============================================ */
+/* Prevent content from exceeding viewport */
+.hx-content-container {
+  max-width: 100%;
+  overflow-x: hidden;
+  /* Ensure proper box sizing */
+  box-sizing: border-box;
+}
+
+/* ============================================
+   Print Styles - Defensive
+   ============================================ */
+@media print {
+  /* Ensure links are visible in print */
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+  
+  /* Don't show for internal links */
+  a[href^="#"]:after,
+  a[href^="/"]:after {
+    content: "";
+  }
+  
+  /* Prevent orphaned content */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  
+  /* Keep related content together */
+  pre, blockquote, img {
+    page-break-inside: avoid;
+  }
+}
+
+/* ============================================
+   Reduced Motion - Accessibility
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================
+   High Contrast Mode - Accessibility
+   ============================================ */
+@media (prefers-contrast: high) {
+  /* Ensure sufficient contrast in high contrast mode */
+  a {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+  
+  button,
+  [role="button"] {
+    border: 2px solid currentColor;
+  }
 }
