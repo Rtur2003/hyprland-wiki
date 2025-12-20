@@ -6,6 +6,10 @@
 {{- $version := .Params.version | default "Latest git" -}}
 {{- $url := .URL | default "/version-selector/" -}}
 
+{{/*  Version display configuration */}}
+{{- $maxVersionLength := 20 -}}
+{{- $truncatedLength := 17 -}}
+
 {{- $outdated := "" -}}
 {{- if .Params.outdated -}}
   {{- $outdated = "outdated" -}}
@@ -13,8 +17,8 @@
 
 {{/*  Defensive: ensure version text exists and isn't too long */}}
 {{- $displayVersion := $version -}}
-{{- if gt (len $version) 20 -}}
-  {{- $displayVersion = printf "%s..." (substr $version 0 17) -}}
+{{- if gt (len $version) $maxVersionLength -}}
+  {{- $displayVersion = printf "%s..." (substr $version 0 $truncatedLength) -}}
 {{- end -}}
 
 <a href="{{ $url }}" 

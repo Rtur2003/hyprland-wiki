@@ -103,7 +103,7 @@ button:focus-visible,
 /* ============================================
    Touch Targets - Mobile Usability
    ============================================ */
-@media (max-width: 768px) {
+@media (max-width: 768px) {  /* Note: CSS doesn't support CSS variable references in media queries yet */
   /* Ensure minimum touch target size (44x44px per WCAG) */
   button,
   a,

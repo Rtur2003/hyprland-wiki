@@ -5,6 +5,7 @@ Ensures all required tools and dependencies are properly configured.
 """
 
 import sys
+import re
 import subprocess
 import shutil
 from pathlib import Path
@@ -113,7 +114,6 @@ class EnvironmentValidator:
             version_str = result.stdout.strip()
             
             # Extract version number
-            import re
             match = re.search(r'Python (\d+)\.(\d+)', version_str)
             if match:
                 major, minor = int(match.group(1)), int(match.group(2))

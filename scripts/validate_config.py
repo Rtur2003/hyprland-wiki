@@ -116,6 +116,7 @@ class ConfigValidator:
     def validate_menu_structure(self) -> None:
         """Validate menu configuration for completeness and accessibility."""
         # Check for menu weight ordering
+        # Pattern matches: [[menu.main]] ... (content) ... [[menu.main]] (or end of file)
         menu_items = re.findall(r'\[\[menu\.main\]\](.*?)(?=\[\[menu\.main\]\]|$)', 
                                 self.config_content, re.DOTALL)
         

@@ -12,6 +12,11 @@ from dataclasses import dataclass
 from urllib.parse import urlparse
 
 
+# Display constants for output formatting
+MAX_DISPLAYED_ISSUES = 10
+MAX_URL_DISPLAY_LENGTH = 50
+
+
 @dataclass
 class ContentIssue:
     """Represents an issue found in content."""
@@ -106,7 +111,7 @@ class ContentValidator:
                             line_number=line_num,
                             severity="warning",
                             category="link",
-                            message=f"Non-HTTPS link found: {link_url[:50]}..."
+                            message=f"Non-HTTPS link found: {link_url[:MAX_URL_DISPLAY_LENGTH]}..."
                         ))
                 else:
                     self.stats['internal_links_found'] += 1
@@ -200,12 +205,16 @@ class ContentValidator:
                 self.stats['images_found'] += 1
                 
                 if not alt_text.strip():
+                    # Truncate long image URLs for cleaner error messages
+                    display_url = image_url[:MAX_URL_DISPLAY_LENGTH] if len(image_url) > MAX_URL_DISPLAY_LENGTH else image_url
+                    truncation_suffix = "..." if len(image_url) > MAX_URL_DISPLAY_LENGTH else ""
+                    
                     self.issues.append(ContentIssue(
                         file_path=file_path,
                         line_number=line_num,
                         severity="warning",
                         category="accessibility",
-                        message=f"Image without alt text: {image_url[:40]}... (bad for screen readers)"
+                        message=f"Image without alt text: {display_url}{truncation_suffix} (bad for screen readers)"
                     ))
     
     def validate_all(self) -> bool:
@@ -244,20 +253,20 @@ class ContentValidator:
         
         if errors:
             print(f"❌ ERRORS ({len(errors)}):")
-            for issue in errors[:10]:  # Show first 10
+            for issue in errors[:MAX_DISPLAYED_ISSUES]:
                 rel_path = issue.file_path.relative_to(self.content_dir)
                 print(f"  • {rel_path}:{issue.line_number} - {issue.message}")
-            if len(errors) > 10:
-                print(f"  ... and {len(errors) - 10} more errors")
+            if len(errors) > MAX_DISPLAYED_ISSUES:
+                print(f"  ... and {len(errors) - MAX_DISPLAYED_ISSUES} more errors")
             print()
         
         if warnings:
             print(f"⚠️  WARNINGS ({len(warnings)}):")
-            for issue in warnings[:10]:  # Show first 10
+            for issue in warnings[:MAX_DISPLAYED_ISSUES]:
                 rel_path = issue.file_path.relative_to(self.content_dir)
                 print(f"  • {rel_path}:{issue.line_number} - {issue.message}")
-            if len(warnings) > 10:
-                print(f"  ... and {len(warnings) - 10} more warnings")
+            if len(warnings) > MAX_DISPLAYED_ISSUES:
+                print(f"  ... and {len(warnings) - MAX_DISPLAYED_ISSUES} more warnings")
             print()
         
         if info:
