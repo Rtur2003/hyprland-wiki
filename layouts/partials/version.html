@@ -1,3 +1,8 @@
+{{/*
+  Version Badge Partial
+  Displays current version with defensive patterns and accessibility
+*/}}
+
 {{- $version := .Params.version | default "Latest git" -}}
 {{- $url := .URL | default "/version-selector/" -}}
 
@@ -6,6 +11,23 @@
   {{- $outdated = "outdated" -}}
 {{- end -}}
 
-<a href="{{ $url }}" rel="noreferrer" class="{{ $outdated }} hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative -hx-ml-2 hx-hidden hx-whitespace-nowrap hx-p-2 md:hx-inline-block hx-text-gray-600 hover:hx-text-gray-800 dark:hx-text-gray-400 dark:hover:hx-text-gray-200 ltr:hx-mr-auto rtl:hx-ml-auto">
-  <span class="hx-text-center">{{ $version }}</span>
+{{/*  Defensive: ensure version text exists and isn't too long */}}
+{{- $displayVersion := $version -}}
+{{- if gt (len $version) 20 -}}
+  {{- $displayVersion = printf "%s..." (substr $version 0 17) -}}
+{{- end -}}
+
+<a href="{{ $url }}" 
+   rel="noreferrer" 
+   class="{{ $outdated }} hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative -hx-ml-2 hx-hidden hx-whitespace-nowrap hx-p-2 md:hx-inline-block hx-text-gray-600 hover:hx-text-gray-800 dark:hx-text-gray-400 dark:hover:hx-text-gray-200 ltr:hx-mr-auto rtl:hx-ml-auto hx-transition-colors"
+   aria-label="Version: {{ $version }}{{ if $outdated }} (outdated){{ end }}"
+   {{ if $outdated }}aria-describedby="version-warning"{{ end }}>
+  <span class="hx-text-center hx-inline-block hx-max-w-[150px] hx-truncate" title="{{ $version }}">
+    {{ $displayVersion }}
+  </span>
 </a>
+
+{{/*  Defensive: Screen reader warning for outdated versions */}}
+{{ if $outdated -}}
+<span id="version-warning" class="hx-sr-only">Warning: This is an outdated version. Consider upgrading to the latest version.</span>
+{{- end }}

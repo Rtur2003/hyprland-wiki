@@ -11,7 +11,29 @@ permissions:
   contents: read
 
 jobs:
+  validate:
+    name: Validate Configuration and Content
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate Configuration
+        run: python3 scripts/validate_config.py
+
+      - name: Validate Content
+        run: python3 scripts/validate_content.py
+
   build:
+    name: Build Site
+    needs: validate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
